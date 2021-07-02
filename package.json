@@ -1,0 +1,44 @@
+{
+  "name": "@demax/switch-bridge-sdk",
+  "license": "MIT",
+  "version": "1.0.0",
+  "description": "🛠 An SDK for building applications on top of switch-bridge-sdk.",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": "https://github.com/demax-team/demax-bridge-sdk.git",
+  "keywords": [
+    "switch",
+    "bridge",
+    "ethereum"
+  ],
+  "module": "dist/sdk.esm.js",
+  "scripts": {
+    "lint": "tsdx lint src test",
+    "lint:fix": "tsdx lint src test --fix",
+    "build": "tsdx build",
+    "start": "tsdx watch",
+    "test": "tsdx test",
+    "prepublishOnly": "tsdx build"
+  },
+  "dependencies": {
+    "@walletconnect/client": "^1.3.1",
+    "@walletconnect/qrcode-modal": "^1.3.1",
+    "async-validator": "^3.3.0",
+    "bignumber": "^1.1.0",
+    "core-js": "^3.6.5",
+    "echarts": "^5.1.1",
+    "fs": "^0.0.1-security",
+    "web3": "^1.3.0"
+  },
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "babel-plugin-component": "^1.1.1",
+    "nprogress": "^0.2.0",
+    "qs": "^6.9.4",
+    "typescript": "~3.9.3",
+    "webpack-cli": "^4.2.0"
+  }
+}
