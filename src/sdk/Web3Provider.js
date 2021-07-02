@@ -40,7 +40,7 @@ class Web3ProviderInstance {
         return ContractsAddr[this.chainId][name]
     }
 
-    getTokenAddress = (name) => {
+    getTokenAddress(name) {
         return Tokens[this.chainId][name]
     }
 

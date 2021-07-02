@@ -25,6 +25,12 @@ const CHAIN_NAME = {
     256: "HECO Chain Testnet"
 }
 
+const IPFS_URL = 'https://ipfs.io/ipfs'
+const IPFS_IFO = {
+    56: 'k2k4r8oeuufgtw5e2piqe0i0yfds97imkqumrjaupsagxyekz72t5jy1',
+    97: 'k2k4r8nec9xa2o2x29dag11p54nbj6bugxe6c9hflkuv722omq184bz2',
+}
+
 const ContractsAddr = {
     1: {
         SwitchQuery: "",
@@ -86,6 +92,36 @@ const ContractsAddr = {
     },
 }
 
+const Tokens = {
+    56: {
+        USDT: '0x55d398326f99059fF775485246999027B3197955',
+        WETH: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+        USDC: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+        BUSD: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+    },
+    42: {
+        WETH : "0x67fe5bE3f16c01fd5C5eb3DdCC08f1dAefac40a5",
+        USDT : "0xF02D16a87F97428A258A48476b52Cfc105E371C1",
+        USDC : "0x42aC2e5bD42a5Eceb72d06C9c1A5A45433c17911",
+        DAI : "0x38B9eC6994F288155345cF5aC9245182eF12F04f",
+        XBurger : "0x3455A745060EeeB6979034E7243B8Ba3952D334a",
+    },
+    97: {
+        WETH : "0x7FcCaDD3e6A3F80e194CaDf13FeDF36B9BBbe98F",
+        USDT : "0xF2ED382e6A3439Be124813842200cf6702fD6ecA",
+        USDC : "0x716AE8720739F0434B8D469cd3EC392A0fE16599",
+        DAI : "0xCB6260C77629c25A065081442EF4E2Bec297aa09",
+        XBurger : "0xd1f461C7Ced3Bb1810B9393dB9BD2De1819fd4e5",
+    },
+    256: {
+        WETH : "0x8F8da91c632be57C62D60A27f4ed07025Dfb9580",
+        USDT : "0xadCf42A9318D10F0D70333812F4A3Ab0622e0ef3",
+        USDC : "0xA0993880177D3c7BB57546b0b349F93143877d19",
+        DAI : "0xD512A14824D40c82582522BFE936d35354658BC5",
+        XBurger : "0x138b6473475eaC1762A0EB5323A7E8C96F79f5A3",
+    },
+}
+
 const ChainSymbol = {
     WToken: {
         1: "WETH",
@@ -105,7 +141,8 @@ const ChainSymbol = {
     }
 }
 
+
 const STAKINGTOKENPRE = "sw"
 
 
-export { CHAIN_RPC, CHAIN_BROWSER, CHAIN_NAME, ContractsAddr, ChainSymbol, STAKINGTOKENPRE };
+export { CHAIN_RPC, CHAIN_BROWSER, CHAIN_NAME, Tokens, ContractsAddr, ChainSymbol, IPFS_URL, IPFS_IFO, STAKINGTOKENPRE };

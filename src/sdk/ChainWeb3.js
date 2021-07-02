@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import WalletConnect from '@walletconnect/client';
 import QRCodeModal from '@walletconnect/qrcode-modal';
 import web3Util from './Web3Util.js'
-import { CHAIN_RPC, CHAIN_BROWSER, CHAIN_NAME, ContractsAddr, ChainSymbol } from './ChainConfig.js'
+import { CHAIN_RPC, CHAIN_BROWSER, CHAIN_NAME, ContractsAddr, ChainSymbol } from './config/ChainConfig.js'
 
 var chainWeb3 = null;
 
@@ -232,7 +232,7 @@ class ChainWeb3 {
         }
     }
 
-    connectChain = (to = '') => {
+    connectChain(to = '') {
         this.tryCount = 0
         if (!to) {
             to = this.getSession('chainClient')
@@ -251,7 +251,7 @@ class ChainWeb3 {
         }
     }
 
-    connect = (to = '') => {
+    connect(to = ''){
         console.log('ChainWeb3 ...')
         if (!to) {
             to = this.getSession('chainClient')
@@ -611,7 +611,7 @@ class ChainWeb3 {
         localStorage.removeItem(tableName);
     }
 
-    getToken = (addr) => {
+    getToken(addr) {
         addr = addr + ""
         addr = addr.toLocaleLowerCase()
         return this.tokens[addr]

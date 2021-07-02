@@ -19,6 +19,32 @@ var SwitchPools = {
                     name: "USDT",
                     tokenAddress: "",
                     chainId: 189
+                },
+                {
+                    name: "USDT",
+                    tokenAddress: "",
+                    chainId: 137
+                },
+                {
+                    name: "USDT", //   polygon
+                    tokenAddress: "",
+                    chainId: 137
+                },
+
+                {
+                    name: "USDT", // solana
+                    tokenAddress: "",
+                    chainId: 123456
+                },
+                {
+                    name: "USDT", // xDai
+                    tokenAddress: "",
+                    chainId: 100
+                },
+                {
+                    name: "USDT",   //  fantom
+                    tokenAddress: "",
+                    chainId: 250
                 }
             ]
         },
@@ -40,6 +66,27 @@ var SwitchPools = {
                     name: "USDC",
                     tokenAddress: "",
                     chainId: 189
+                },
+                {
+                    name: "USDC", //   polygon
+                    tokenAddress: "",
+                    chainId: 137
+                },
+
+                {
+                    name: "USDC", // solana
+                    tokenAddress: "",
+                    chainId: 123456789
+                },
+                {
+                    name: "USDC", // xDai
+                    tokenAddress: "",
+                    chainId: 100
+                },
+                {
+                    name: "USDC",   //  fantom
+                    tokenAddress: "",
+                    chainId: 250
                 }
             ]
         },
@@ -61,6 +108,27 @@ var SwitchPools = {
                     name: "DAI",
                     tokenAddress: "",
                     chainId: 189
+                },
+                {
+                    name: "DAI", //   polygon
+                    tokenAddress: "",
+                    chainId: 137
+                },
+
+                {
+                    name: "DAI", // solana
+                    tokenAddress: "",
+                    chainId: 123456789
+                },
+                {
+                    name: "DAI", // xDai
+                    tokenAddress: "",
+                    chainId: 100
+                },
+                {
+                    name: "DAI",   //  fantom
+                    tokenAddress: "",
+                    chainId: 250
                 }
             ]
         }
@@ -84,6 +152,26 @@ var SwitchPools = {
                     name: "USDT",
                     tokenAddress: "0xadCf42A9318D10F0D70333812F4A3Ab0622e0ef3",
                     chainId: 256
+                },
+                {
+                    name: "USDT", //   polygon
+                    tokenAddress: "",
+                    chainId: 80001
+                },
+                {
+                    name: "USDT", // solana
+                    tokenAddress: "",
+                    chainId: 1234567
+                },
+                {
+                    name: "USDT", // xDai
+                    tokenAddress: "",
+                    chainId: 12345678
+                },
+                {
+                    name: "USDT",   //  fantom
+                    tokenAddress: "",
+                    chainId: 123456789
                 }
             ]
         },
@@ -105,6 +193,26 @@ var SwitchPools = {
                     name: "USDC",
                     tokenAddress: "0xA0993880177D3c7BB57546b0b349F93143877d19",
                     chainId: 256
+                },
+                {
+                    name: "USDC", //   polygon
+                    tokenAddress: "",
+                    chainId: 80001
+                },
+                {
+                    name: "USDC", // solana
+                    tokenAddress: "",
+                    chainId: 1234567
+                },
+                {
+                    name: "USDC", // xDai
+                    tokenAddress: "",
+                    chainId: 12345678
+                },
+                {
+                    name: "USDC",   //  fantom
+                    tokenAddress: "",
+                    chainId: 123456789
                 }
             ]
         },
@@ -126,6 +234,26 @@ var SwitchPools = {
                     name: "DAI",
                     tokenAddress: "0xD512A14824D40c82582522BFE936d35354658BC5",
                     chainId: 256
+                },
+                {
+                    name: "DAI", //   polygon
+                    tokenAddress: "",
+                    chainId: 80001
+                },
+                {
+                    name: "DAI", // solana
+                    tokenAddress: "",
+                    chainId: 1234567
+                },
+                {
+                    name: "DAI", // xDai
+                    tokenAddress: "",
+                    chainId: 12345678
+                },
+                {
+                    name: "DAI",   //  fantom
+                    tokenAddress: "",
+                    chainId: 123456789
                 }
             ]
         },
@@ -150,6 +278,26 @@ var SwitchPools = {
                     tokenSymbol: "HBTC",
                     tokenAddress: "",
                     chainId: 256
+                },
+                {
+                    name: "BTC", //   polygon
+                    tokenAddress: "",
+                    chainId: 80001
+                },
+                {
+                    name: "BTC", // solana
+                    tokenAddress: "",
+                    chainId: 1234567
+                },
+                {
+                    name: "BTC", // xDai
+                    tokenAddress: "",
+                    chainId: 12345678
+                },
+                {
+                    name: "BTC",   //  fantom
+                    tokenAddress: "",
+                    chainId: 123456789
                 }
             ]
         },
@@ -171,6 +319,26 @@ var SwitchPools = {
                     name: "swUSDT",
                     tokenAddress: "0x09191DC2677cCB7937AA89241Ff2f6BBe93D5C1c",
                     chainId: 256
+                },
+                {
+                    name: "swUSDT", //   polygon
+                    tokenAddress: "",
+                    chainId: 80001
+                },
+                {
+                    name: "swUSDT", // solana
+                    tokenAddress: "",
+                    chainId: 1234567
+                },
+                {
+                    name: "swUSDT", // xDai
+                    tokenAddress: "",
+                    chainId: 12345678
+                },
+                {
+                    name: "swUSDT",   //  fantom
+                    tokenAddress: "",
+                    chainId: 123456789
                 }
             ]
         },
@@ -192,6 +360,26 @@ var SwitchPools = {
                     name: "swUSDC",
                     tokenAddress: "0xc5E6e58e3B5816C985B19415B9b4D20F2e9Ae634",
                     chainId: 256
+                },
+                {
+                    name: "swUSDC", //   polygon
+                    tokenAddress: "",
+                    chainId: 80001
+                },
+                {
+                    name: "swUSDC", // solana
+                    tokenAddress: "",
+                    chainId: 1234567
+                },
+                {
+                    name: "swUSDC", // xDai
+                    tokenAddress: "",
+                    chainId: 12345678
+                },
+                {
+                    name: "swUSDC",   //  fantom
+                    tokenAddress: "",
+                    chainId: 123456789
                 }
             ]
         },
@@ -213,6 +401,26 @@ var SwitchPools = {
                     name: "swDAI",
                     tokenAddress: "0x5bdC9F9c0D070A3a647EF0FAAE6BA3b9c920CB46",
                     chainId: 256
+                },
+                {
+                    name: "swDAI", //   polygon
+                    tokenAddress: "",
+                    chainId: 80001
+                },
+                {
+                    name: "swDAI", // solana
+                    tokenAddress: "",
+                    chainId: 1234567
+                },
+                {
+                    name: "swDAI", // xDai
+                    tokenAddress: "",
+                    chainId: 12345678
+                },
+                {
+                    name: "swDAI",   //  fantom
+                    tokenAddress: "",
+                    chainId: 123456789
                 }
             ]
         },

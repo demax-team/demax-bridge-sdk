@@ -350,14 +350,14 @@ class SwitchAcross extends BaseByName {
         d.inLimit = new BigNumber(res.inLimit).shiftedBy(-1 * tokenInInfo.decimals).toFixed();
         d.outLimit = new BigNumber(res.outLimit).shiftedBy(-1 * tokenOutInfo.decimals).toFixed();
 
-        
+
         if(!isTicket(tokenOutInfo.tokenOut, toChainId)) {
             let treasureBalance = await newSwitchTreasury(toChainId).queryWithdraw(this.address, tokenOutInfo.tokenOut);
             if(new BigNumber(res.outLimit).gt(new BigNumber(treasureBalance))) {
                 d.outLimit = new BigNumber(treasureBalance).shiftedBy(-1 * tokenOutInfo.decimals).toFixed();
             }
         }
-        
+
         return d;
     }
 
@@ -477,7 +477,7 @@ class SwitchAcross extends BaseByName {
         _switchData.tokenOutSymbol = tokenOutInfo.symbol;
         _switchData.amountIn = new BigNumber(data.inputValues[2][0]).shiftedBy(-1 * tokenInInfo.decimals).toFixed();
         _switchData.amountOut = new BigNumber(data.inputValues[2][1]).shiftedBy(-1 * tokenOutInfo.decimals).toFixed();
-        
+
         let _status = 0;
         if(data.hasOwnProperty('status')) {
             if(data.status) {
@@ -501,7 +501,7 @@ class SwitchAcross extends BaseByName {
                 }
             })
             if (foundI > -1) {
-                item = {..._switchAcrossHistory[foundI]};
+                let item = {..._switchAcrossHistory[foundI]};
                 item.status = _status;
                 item.process= _switchData.process;
                 item.outSn = _switchData.outSn;

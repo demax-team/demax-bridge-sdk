@@ -39,3 +39,5 @@ function newSwitchQuery(chainId, account) {
     _SwitchQuery[chainId].initialize(chainId, account);
     return _SwitchQuery[chainId];
 }
+
+export { SwitchQuery, newSwitchQuery }
