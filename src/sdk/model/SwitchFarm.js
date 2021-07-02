@@ -3,7 +3,6 @@ import BigNumber from "bignumber.js"
 import BaseByName from './BaseByName';
 import { ERC20Token } from './ERC20Token.js';
 import Web3Provider from '../Web3Provider.js';
-import { SwitchFarms } from '../config/SwitchConfig.js';
 import { newSwitchAcross } from './SwitchAcross';
 
 let _farmData = {};
@@ -217,71 +216,5 @@ function newSwitchFarm(chainId, account) {
     _SwitchFarm[chainId].initialize(chainId, account);
     return _SwitchFarm[chainId];
 }
-class SwitchFarmPools {
-    constructor(provider) {
-        this.provider = provider;
-        this.envName = 'main';
-    }
 
-    getPools() {
-        if([42,97,256].includes(this.provider.chainId)) {
-            this.envName = 'test';
-        }
-        return SwitchFarms[this.envName];
-    }
-    async filterFarms(chainId=0, name='', my=false) {
-        let pools = this.getPools();
-        for (let i=0; i<pools.length; i++) {
-            let d = pools[i];
-            d.isShow = true
-            if(chainId>0 && chainId != d.chainId) {
-                d.isShow = false
-            }
-            if(name && name != d.name) {
-                d.isShow = false
-            }
-            if(my && d.userAmount <= '0') {
-                d.isShow = false
-            }
-        }
-    }
-
-    async getFarms() {
-        let pools = this.getPools();
-        for (let i=0; i<pools.length; i++) {
-            let d = pools[i];
-            d.apy = '--'
-            d.lastBlock = 0
-            d.rewardSymbol = '--'
-            d.earnSymbol = '--'
-            d.userAllowance = '0'
-            d.userBalance = '--'
-            d.userAmount = '--'
-            d.userReward = '--'
-            d.userEarn = '--'
-            d.totalStake = '--'
-            d.totalStakeValue = '--'
-            d.weight = '--'
-            d.isShow = true
-            console.log('getFarms:', d.chainId, this.provider.account);
-            newSwitchFarm(d.chainId, this.provider.account).farmUpdatePool(d);
-        }
-        return pools;
-    }
-
-
-    async getSwitchTokens() {
-        let network = process.env.VUE_APP_POOL_NETWORK;
-        let res = []
-        for (let k in SwitchPools[network]) {
-            if (SwitchPools[network][k].opened) {
-                SwitchPools[network][k].name = k
-                res.push(SwitchPools[network][k])
-            }
-        }
-        return res;
-    }
-
-}
-
-export { SwitchFarm, newSwitchFarm, SwitchFarmPools }
+export { SwitchFarm, newSwitchFarm }

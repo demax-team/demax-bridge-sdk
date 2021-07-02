@@ -9,9 +9,9 @@ export default Test
 //
 // import chainWeb3 from './ChainWeb3.js'
 // import { ERC20Token, newERC20Token } from './model/ERC20Token.js'
-// import { SwitchTicketFactory, newSwitchTicketFactory, SwitchTicketPools } from './model/SwitchTicketFactory.js'
-// import { SwitchFarm, newSwitchFarm, SwitchFarmPools } from './model/SwitchFarm.js'
-// import { SwitchAcross, SwitchAcrossHistory } from './model/SwitchAcross.js'
+// import { SwitchTicketFactory, newSwitchTicketFactory } from './model/SwitchTicketFactory.js'
+// import { SwitchFarm, newSwitchFarm } from './model/SwitchFarm.js'
+// import { SwitchAcross } from './model/SwitchAcross.js'
 // import { SwitchTreasury } from './model/SwitchTreasury.js'
 // import { newSwitchQuery } from './model/SwitchQuery.js'
 //
@@ -44,13 +44,9 @@ export default Test
 //   NewSwitchFarm: newSwitchFarm,
 //   NewSwitchTicketFactory: newSwitchTicketFactory,
 //   switchAcross: new SwitchAcross(chainWeb3),
-//   switchAcrossHistory: new SwitchAcrossHistory(chainWeb3),
 //   switchTreasury: new SwitchTreasury(chainWeb3),
-//   switchTicketPools: new SwitchTicketPools(chainWeb3),
 //   switchTicketFactory: new SwitchTicketFactory(chainWeb3),
-//   switchFarmPools: new SwitchFarmPools(chainWeb3),
 //   switchFarm: new SwitchFarm(chainWeb3),
 // }
 //
-// ChainApi.switchAcross.subscribe(ChainApi.switchAcrossHistory.handleHistory);
 // export default ChainApi

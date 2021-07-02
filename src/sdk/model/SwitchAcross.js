@@ -1,11 +1,10 @@
 import SwitchAcrossABI from '../abi/SwitchAcross.json';
 import BigNumber from "bignumber.js"
 import BaseByName from './BaseByName';
-import Base from './Base';
 import { ERC20Token, newERC20Token } from './ERC20Token.js';
 import Web3Provider from '../Web3Provider.js';
 import web3Util from '../Web3Util.js'
-import { SwitchChainIds, SwitchPools } from '../config/SwitchConfig.js';
+import { SwitchChainIds } from '../config/SwitchConfig.js';
 import { newSwitchTreasury } from './SwitchTreasury.js';
 
 function asleep(ms) {
@@ -20,8 +19,7 @@ function getChainIds(chainId) {
 }
 
 var _switchAcrossTokens = {};
-var _switchCount = 0;
-var _switchAcrossHistory = [];
+
 var _process = {
     step1_pending: 10,
     step1_success: 11,
@@ -29,74 +27,6 @@ var _process = {
     step2_pending: 20,
     step2_success: 21,
     step2_fail: 22,
-}
-
-const _switchDefaultData = {
-    "ukey": "chainIdIn-inSn",
-    "process": _process.step1_pending,
-    "status": 0,
-    "inSn": 0,
-    "outSn": 0,
-    "mode": 0,
-    "chainIdIn": 0,
-    "tokenIn": "",
-    "tokenInSymbol": "",
-    "chainIdOut": 0,
-    "tokenOut": "",
-    "tokenOutSymbol": "",
-    "amountIn": "0",
-    "amountOut": "0",
-    "fee": "0",
-    "slide": "0",
-    "user": "",
-    "signature": "",
-    "txIn": "",
-    "txOut": "",
-    "blockIn": 0,
-    "blockOut": 0,
-    "timeIn": null,
-    "timeOut": null,
-    "updateTime": new Date(),
-};
-var _switchData = {..._switchDefaultData};
-
-function loadSwitchCount() {
-    let res = localStorage.getItem('_switchCount');
-    if(res) {
-        _switchCount = Number(res);
-        if(_switchCount <0) {
-            _switchCount = 0;
-        }
-    }
-}
-
-function cleanSwitchCount() {
-    _switchCount = 0;
-    localStorage.setItem('_switchCount', _switchCount+'');
-}
-
-function updateSwitchCount(num) {
-    _switchCount += num;
-    if(_switchCount <0) {
-        _switchCount = 0;
-    }
-    localStorage.setItem('_switchCount', _switchCount+'');
-}
-
-loadSwitchCount();
-
-function isMyWallet(_user) {
-    const local = localStorage.getItem('myWallets');
-    if (local) {
-        const wallets = JSON.parse(local);
-        for(let w in wallets) {
-            console.log('isMywallet:', w, _user);
-            if(w.toLowerCase() == _user.toLowerCase()) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 function isTicket(_token, chainId) {
@@ -433,93 +363,13 @@ class SwitchAcross extends BaseByName {
 
     async handleTransferIn(data) {
         console.log('handleTransferIn:', data);
-        _switchData.process = _process.step1_pending;
-        _switchData.user = data.inputValues[0].toLowerCase();
-        _switchData.chainIdIn = Number(data.chainId);
-        _switchData.chainIdOut = Number(data.inputValues[2][2]);
-        _switchData.tokenIn = data.inputValues[1][0].toLowerCase();
-        _switchData.tokenOut = data.inputValues[1][1].toLowerCase();
-        _switchData.txIn = data.transactionHash;
-        _switchData.mode = Number(data.inputValues[2][3]);
-        _switchData.timeIn = new Date();
-        _switchData.updateTime= new Date();
-
-        let tokenInInfo = await newERC20Token(_switchData.chainIdIn, _switchData.tokenIn).info();
-        let tokenOutInfo = await newERC20Token(_switchData.chainIdOut, _switchData.tokenOut).info();
-        _switchData.tokenInSymbol = tokenInInfo.symbol;
-        _switchData.tokenOutSymbol = tokenOutInfo.symbol;
-        _switchData.amountIn = new BigNumber(data.inputValues[2][0]).shiftedBy(-1 * tokenInInfo.decimals).toFixed();
-        _switchData.amountOut = new BigNumber(data.inputValues[2][1]).shiftedBy(-1 * tokenOutInfo.decimals).toFixed();
-        if(data.hasOwnProperty('status')) {
-            if(data.status) {
-                _switchData.process = _process.step1_success;
-            } else {
-                _switchData.process = _process.step1_fail;
-            }
-        }
     }
 
     async handleTransferOut(data) {
         console.log('handleTransferOut:', data);
-        _switchData.process = _process.step2_pending;
-        _switchData.user = data.inputValues[0].toLowerCase();
-        _switchData.inSn = Number(data.inputValues[2][5]);
-        _switchData.chainIdIn = data.inputValues[2][2];
-        _switchData.chainIdOut = Number(data.chainId);
-        _switchData.tokenIn = data.inputValues[1][0].toLowerCase();
-        _switchData.tokenOut = data.inputValues[1][1].toLowerCase();
-        _switchData.txOut = data.transactionHash;
-        _switchData.updateTime= new Date();
 
-        let tokenInInfo = await newERC20Token(_switchData.chainIdIn, _switchData.tokenIn).info();
-        let tokenOutInfo = await newERC20Token(_switchData.chainIdOut, _switchData.tokenOut).info();
-        _switchData.tokenInSymbol = tokenInInfo.symbol;
-        _switchData.tokenOutSymbol = tokenOutInfo.symbol;
-        _switchData.amountIn = new BigNumber(data.inputValues[2][0]).shiftedBy(-1 * tokenInInfo.decimals).toFixed();
-        _switchData.amountOut = new BigNumber(data.inputValues[2][1]).shiftedBy(-1 * tokenOutInfo.decimals).toFixed();
-
-        let _status = 0;
-        if(data.hasOwnProperty('status')) {
-            if(data.status) {
-                _switchData.timeOut = new Date();
-                _switchData.process = _process.step2_success;
-                _status = 1;
-            } else {
-                _switchData.process = _process.step2_fail;
-            }
-        }
-
-        let tableName = 'switchArcossHistory' + _switchData.user;
-        const local = localStorage.getItem(tableName);
-        if (local) {
-            let foundI = -1;
-            let ukey = _switchData.chainIdIn + '-' + _switchData.inSn;
-            _switchAcrossHistory.forEach((d, i) => {
-                if (d.ukey == ukey) {
-                    foundI = i
-                    return
-                }
-            })
-            if (foundI > -1) {
-                let item = {..._switchAcrossHistory[foundI]};
-                item.status = _status;
-                item.process= _switchData.process;
-                item.outSn = _switchData.outSn;
-                item.txOut = _switchData.txOut;
-                item.blockOut = _switchData.blockOut;
-                item.timeOut = new Date();
-                item.updateTime= new Date();
-                _switchAcrossHistory.splice(foundI, 1)
-            }
-            _switchAcrossHistory.unshift(item);
-            localStorage.setItem(tableName, JSON.stringify(_switchAcrossHistory));
-        }
     }
 
-    resetSwitchData() {
-        _switchData = {..._switchDefaultData}
-        return _switchData;
-    }
 
     async handleTxWrap(chainId, tx) {
         let url = '/api/handleTx';
@@ -555,160 +405,6 @@ class SwitchAcross extends BaseByName {
     }
 }
 
-class SwitchAcrossHistory extends Base {
-    constructor(provider) {
-        super(provider);
-        this.envName = 'main';
-        this.process = _process;
-    }
-
-    getEnvName() {
-        if([42,97,256].includes(this.provider.chainId)) {
-            return 'test';
-        }
-        return 'main';
-    }
-
-    initialize(chainId, account=null) {
-        console.log('SwitchAcrossHistory initialize...', this.provider.chainId);
-        super.initialize(chainId, account);
-        this.getAcrossTokens();
-        this.loadHistory();
-        let ids = getChainIds(this.provider.chainId);
-        for (let i=0; i<ids.length; i++) {
-            newSwitchAcross(ids[i]).subscribe(this.handleHistory);
-        }
-    }
-
-    // status, 0: pending 1:success
-    async handleHistory(log) {
-        let d = log.returnValues;
-        if(!isMyWallet(d.user)) {
-            return;
-        }
-        let tableName = 'switchArcossHistory' + d.user.toLowerCase();
-        let item = {..._switchData};
-        if(log.eventName == "TransferIned") {
-            updateSwitchCount(1);
-            item.ukey = log.chainId + '-' + d.sn;
-            item.status = 0;
-            item.process = _process.step1_success;
-            item.inSn = d.sn;
-            item.mode = Number(d.mode);
-            item.chainIdIn = Number(log.chainId);
-            item.chainIdOut = Number(d.chainId);
-            item.tokenIn = d.tokenIn.toLowerCase();
-            item.tokenOut = d.tokenOut.toLowerCase();
-            item.amountIn = d.amountIn;
-            item.amountOut = d.amountOut;
-            item.fee = d.fee;
-            item.slide = d.slide;
-            item.user = d.user.toLowerCase();
-            item.txIn = log.transactionHash;
-            item.blockIn = log.blockNumber;
-            item.timeIn = new Date();
-            item.updateTime= new Date();
-
-            let tokenInInfo = await newERC20Token(log.chainId, item.tokenIn).info();
-            let tokenOutInfo = await newERC20Token(d.chainId, item.tokenOut).info();
-            item.tokenInSymbol = tokenInInfo.symbol;
-            item.tokenOutSymbol = tokenOutInfo.symbol;
-            item.amountIn = new BigNumber(item.amountIn).shiftedBy(-1 * tokenInInfo.decimals).toFixed();
-            item.amountOut = new BigNumber(item.amountOut).shiftedBy(-1 * tokenOutInfo.decimals).toFixed();
-            item.fee = new BigNumber(item.fee).shiftedBy(-18).toFixed();
-            item.slide = new BigNumber(item.slide).shiftedBy(-1 * tokenOutInfo.decimals).toFixed();
-
-        } else if(log.eventName == "TransferOuted") {
-            updateSwitchCount(-1);
-            item.ukey = d.chainId + '-' + d.inSn;
-        } else {
-            console.error('handleHistory unknown log:', log);
-            return;
-        }
-
-        const local = localStorage.getItem(tableName);
-        if (local) {
-            let foundI = -1;
-            _switchAcrossHistory.forEach((d, i) => {
-                if (d.ukey == item.ukey) {
-                    foundI = i
-                    return
-                }
-            })
-            if (foundI > -1) {
-                if(log.eventName == "TransferOuted") {
-                    item = {..._switchAcrossHistory[foundI]};
-                    item.status = 1;
-                    item.process= _process.step2_success;
-                    item.outSn = d.sn;
-                    item.txOut = log.transactionHash;
-                    item.blockOut = log.blockNumber;
-                    item.timeOut = new Date();
-                    item.updateTime= new Date();
-
-                    if(_switchData.chainIdIn == item.chainIdIn && _switchData.txIn == item.txIn) {
-                        _switchData.txOut = item.txOut;
-                        _switchData.timeOut = new Date();
-                        _switchData.updateTime= new Date();
-                        _switchData.process = _process.step2_success;
-                    }
-                }
-                _switchAcrossHistory.splice(foundI, 1)
-            }
-            _switchAcrossHistory.unshift(item);
-            localStorage.setItem(tableName, JSON.stringify(_switchAcrossHistory));
-        } else {
-            _switchAcrossHistory.unshift(item);
-            localStorage.setItem(tableName, JSON.stringify(_switchAcrossHistory));
-        }
-        console.log('handleHistory set:', item);
-    }
-
-    getHistory() {
-        return _switchAcrossHistory;
-    }
-
-    loadHistory() {
-        console.log('loadHistory user:', this.provider.getSelectedAddress());
-        if(!this.provider.getSelectedAddress()) {
-            return _switchAcrossHistory;
-        }
-        let tableName = 'switchArcossHistory' + this.provider.getSelectedAddress().toLowerCase();
-        const local = localStorage.getItem(tableName);
-        if (local) {
-            cleanSwitchCount();
-            _switchAcrossHistory.splice(0, _switchAcrossHistory.length);
-            let _data = JSON.parse(local);
-            for(let i=0; i<_data.length; i++) {
-                _switchAcrossHistory.push(_data[i]);
-                if(_data[i].status == 0) {
-                    updateSwitchCount(1);
-                }
-            }
-        }
-        return _switchAcrossHistory;
-    }
-
-    cleanHistory() {
-        let tableName = 'switchArcossHistory' + this.provider.getSelectedAddress().toLowerCase();;
-        localStorage.removeItem(tableName);
-        _switchAcrossHistory.splice(0, _switchAcrossHistory.length);
-    }
-
-    getAcrossTokens() {
-        this.envName = this.getEnvName();
-        _switchAcrossTokens = SwitchPools[this.envName];
-        for (let k in _switchAcrossTokens) {
-            if (_switchAcrossTokens[k].opened == true) {
-                _switchAcrossTokens[k].name = k
-                for (let i=0; i<_switchAcrossTokens[k].list.length; i++) {
-                    _switchAcrossTokens[k].list[i].isTicket = _switchAcrossTokens[k].isTicket;
-                }
-            }
-        };
-        return _switchAcrossTokens;
-    }
-}
 
 var _SwitchAcrossInstanes = {}
 function newSwitchAcross(chainId) {
@@ -721,4 +417,4 @@ function newSwitchAcross(chainId) {
     return _SwitchAcrossInstanes[chainId];
 }
 
-export { SwitchAcross, SwitchAcrossHistory, newSwitchAcross }
+export { SwitchAcross, newSwitchAcross }

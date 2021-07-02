@@ -2,27 +2,9 @@ import SwitchTicketFactoryABI from '../abi/SwitchTicketFactory.json';
 import BigNumber from "bignumber.js"
 import BaseByName from './BaseByName';
 import { ERC20Token } from './ERC20Token.js';
-import { newSwitchTreasury } from './SwitchTreasury.js';
 import { newERC20Token } from './ERC20Token.js';
 import Web3Provider from '../Web3Provider.js';
 import { ContractsAddr, STAKINGTOKENPRE } from '../config/ChainConfig.js';
-import { SwitchPools } from '../config/SwitchConfig.js';
-
-
-var _switchTicketPools = {};
-var _switchTicketPoolKeyMap = {};
-
-function asleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-function getTicketPoolKey(symbol, token, chainId) {
-    return (symbol + token + chainId).toLowerCase();
-}
-
-function getTicketPoolByKey(symbol, token, chainId) {
-    return _switchTicketPoolKeyMap[getTicketPoolKey(symbol,token,chainId)];
-}
 
 class SwitchTicketFactory extends BaseByName {
     constructor(provider) {
@@ -80,7 +62,6 @@ class SwitchTicketFactory extends BaseByName {
         }
         let res = await this.provider.executeContract(this.contract, 'deposit', ethValue.toFixed(), [token, amount.toFixed(), to]);
         console.log('deposit:', res);
-        this.updateBalanceByKey(tokenInfo.symbol, token, this.provider.chainId, to);
         return res;
     }
 
@@ -90,7 +71,6 @@ class SwitchTicketFactory extends BaseByName {
         let tokenInfo = await this.getTokenInfo(token);
         let amount = new BigNumber(value).shiftedBy(1 * ticketInfo.decimals).toFixed();
         let res = await this.provider.executeContract(this.contract, 'withdraw', 0, [isETH, to, ticket, amount]);
-        this.updateBalanceByKey(tokenInfo.symbol, token, this.provider.chainId, to);
         return res
     }
 
@@ -109,46 +89,6 @@ class SwitchTicketFactory extends BaseByName {
         }
         pool.tvl = tvl.toFixed()
         pool.vol = vol.toFixed()
-    }
-
-    async updateBalanceByKey(symbol, address, chainId, walletAddr) {
-        if(!walletAddr) {
-            walletAddr = this.provider.account;
-        }
-        let ele = getTicketPoolByKey(symbol, address, chainId);
-        if(ele) {
-            await this.updateBalance(ele, walletAddr);
-        }
-    }
-
-    async updateBalance(ele, walletAddr) {
-        if(!walletAddr) {
-            walletAddr = this.provider.account;
-        }
-        // console.log('updateBalance:', ele, walletAddr);
-        let token = newERC20Token(ele.chainId, ele.tokenAddress);
-        ele.tokenBalance = await token.balanceOf(walletAddr);
-        ele.tokenAllowance = await token.allowance(walletAddr, ContractsAddr[ele.chainId].SwitchTreasury);
-        let ticketAddr = await this.getTokenMap(ele.tokenAddress);
-        let ticket = newERC20Token(ele.chainId, ticketAddr);
-        // let ticketInfo = await ticket.info();
-        ele.ticketAddress = ticketAddr;
-        ele.ticketBalance = await ticket.tokenBalanceOf(walletAddr);
-        ele.ticketSymbol = STAKINGTOKENPRE + ele.name;
-        let treasury = newSwitchTreasury(ele.chainId);
-        ele.total = await treasury.tokenBalanceOf(ele.tokenAddress);
-
-        await this.updateTotal(_switchTicketPools[ele.name]);
-        console.log('switchPool Data:', ele);
-    }
-
-    async updateUserAllowance(ele, walletAddr) {
-        if(!walletAddr) {
-            walletAddr = this.provider.account;
-        }
-        let token = newERC20Token(ele.chainId, ele.tokenAddress);
-        ele.tokenAllowance = await token.allowance(walletAddr, ContractsAddr[ele.chainId].SwitchTreasury);
-        return ele;
     }
 
     async updateData(ele, walletAddr) {
@@ -184,82 +124,6 @@ class SwitchTicketFactory extends BaseByName {
     }
 }
 
-class SwitchTicketPools {
-    constructor(provider) {
-        this.provider = provider;
-        this.envName = 'main';
-    }
-
-    getEnvName() {
-        if([42,97,256].includes(this.provider.chainId)) {
-            return 'test';
-        }
-        return 'main';
-    }
-
-    getPools() {
-        this.envName = this.getEnvName();
-        _switchTicketPools = SwitchPools[this.envName];
-        return _switchTicketPools;
-    }
-
-    async updateUserAllowance(pool, walletAddr) {
-        if(!walletAddr) {
-            walletAddr = this.provider.account
-        }
-        let _tokenIns = new ERC20Token(this.provider, pool.tokenAddress)
-        pool.tokenAllowance = await _tokenIns.allowance(this.provider.account, this.provider.getContractAddr('SwitchTreasury'))
-        return pool
-    }
-
-    async getSwitchPools(walletAddr) {
-        this.getPools();
-        for (let k in _switchTicketPools) {
-            if (_switchTicketPools[k].opened == true) {
-                _switchTicketPools[k].name = k
-                _switchTicketPools[k].apr = '0';
-                _switchTicketPools[k].tvl = '0';
-                _switchTicketPools[k].vol = '0';
-                for (let i=0; i<_switchTicketPools[k].list.length; i++) {
-                    _switchTicketPools[k].list[i].isTicket = _switchTicketPools[k].isTicket;
-                    _switchTicketPools[k].list[i].total = '0';
-                    _switchTicketPools[k].list[i].tokenBalance = '0';
-                    _switchTicketPools[k].list[i].tokenAllowance = '0';
-                    _switchTicketPools[k].list[i].ticketAddress = '';
-                    _switchTicketPools[k].list[i].ticketBalance = '0';
-                    _switchTicketPools[k].list[i].ticketSymbol = '';
-                    if(!_switchTicketPools[k].list[i].hasOwnProperty('tokenSymbol')) {
-                        _switchTicketPools[k].list[i].tokenSymbol = _switchTicketPools[k].list[i].name;
-                    }
-                    _switchTicketPoolKeyMap[getTicketPoolKey(_switchTicketPools[k].list[i].tokenSymbol, _switchTicketPools[k].list[i].tokenAddress, _switchTicketPools[k].list[i].chainId)] = _switchTicketPools[k].list[i];
-                    if(walletAddr && _switchTicketPools[k].isTicket == false) {
-                        try {
-                            newSwitchTicketFactory(_switchTicketPools[k].list[i].chainId).updateBalance(_switchTicketPools[k].list[i], walletAddr);
-                        } catch(e) {
-                            console.error('updateBalance except:', _switchTicketPools[k].list[i], e);
-                        }
-
-                    }
-                }
-            }
-        };
-        return _switchTicketPools;
-    }
-
-    async getSwitchTokens() {
-        let network = this.getEnvName();
-        let res = []
-        await this.getSwitchPools()
-        for (let k in SwitchPools[network]) {
-            if (SwitchPools[network][k].opened) {
-                SwitchPools[network][k].name = k
-                res.push(SwitchPools[network][k])
-            }
-        }
-        return res;
-    }
-
-}
 
 var _SwitchTicketFactory = {}
 function newSwitchTicketFactory(chainId, account) {
@@ -272,4 +136,4 @@ function newSwitchTicketFactory(chainId, account) {
     return _SwitchTicketFactory[chainId];
 }
 
-export { SwitchTicketFactory, SwitchTicketPools, newSwitchTicketFactory }
+export { SwitchTicketFactory, newSwitchTicketFactory }
