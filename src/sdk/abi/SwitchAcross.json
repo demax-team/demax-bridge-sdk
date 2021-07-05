@@ -1592,9 +1592,9 @@
         "type": "uint256[]"
       },
       {
-        "internalType": "bytes",
-        "name": "_signature",
-        "type": "bytes"
+        "internalType": "bytes[]",
+        "name": "_signatures",
+        "type": "bytes[]"
       }
     ],
     "name": "transferOut",
