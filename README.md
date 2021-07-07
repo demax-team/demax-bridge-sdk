@@ -1,11 +1,13 @@
-# 管理后台
+# @demax/switch-bridge-sdk
 
 ## Project setup
 ```
 yarn install
 
 npm link 
+
 npm link @demax/switch-bridge-sdk
+
 npm nulink @demax/switch-bridge-sdk
 ```
 

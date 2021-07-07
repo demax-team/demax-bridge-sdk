@@ -8,7 +8,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="demax-bridge-sdk" />
-    <orderEntry type="module" module-name="demo-test" />
   </component>
 </module>

@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/demax-bridge-sdk.iml" filepath="$PROJECT_DIR$/.idea/demax-bridge-sdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/demo.iml" filepath="$PROJECT_DIR$/.idea/demo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../demo-test/.idea/demo-test.iml" filepath="$PROJECT_DIR$/../demo-test/.idea/demo-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pancake-swap-sdk-master.iml" filepath="$PROJECT_DIR$/.idea/pancake-swap-sdk-master.iml" />
     </modules>
   </component>
 </project>
