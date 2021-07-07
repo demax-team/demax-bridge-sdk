@@ -111,8 +111,8 @@ class SwitchTicketFactory extends BaseByName {
         let data = [];
         for(let i=0; i<res.length; i++) {
             let d = {
-                tokenAddress: '',
-                ticketAddress: '',
+                tokenAddress: res[i].token,
+                ticketAddress: res[i].ticket,
                 tokenBalance: '',
                 ticketBalance: '',
                 tokenAllowance: '',
