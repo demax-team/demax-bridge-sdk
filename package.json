@@ -12,6 +12,7 @@
   "keywords": [
     "switch"
   ],
+  "author": "april <hesiyuetian@gmail.com>",
   "module": "dist/sdk.esm.js",
   "scripts": {
     "lint": "tsdx lint src test",
