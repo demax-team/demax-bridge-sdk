@@ -24,7 +24,7 @@ function _getInstance(name, address) {
 }
 
 function _setInstance(name, address, ins) {
-  console.log('_setInstance:', name, address);
+  console.log('_setInstance:----', name, address);
   _InstancesCache[name + address.toLocaleLowerCase()] = ins;
 }
 var ChainApi = {

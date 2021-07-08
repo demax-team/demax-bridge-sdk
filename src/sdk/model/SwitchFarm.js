@@ -124,6 +124,7 @@ class SwitchFarm extends BaseByName {
         let farmData = await this.getFarmData()
         let userInfo = await this.contract.methods.userInfo(pid, this.provider.account).call()
         let poolInfo = await this.contract.methods.poolInfo(pid).call()
+        pool.chainId = this.provider.chainId
         pool.depositToken = poolInfo.depositToken
         pool.earnToken = poolInfo.earnToken
         pool.lastBlock = poolInfo.lastBlock
