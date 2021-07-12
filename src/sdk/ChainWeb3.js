@@ -184,10 +184,10 @@ class ChainWeb3 {
         this.web3 = new Web3(this.ethereum)
 
         this.ethereum.autoRefreshOnNetworkChange = false
-        if (navigator.userAgent.indexOf('Mobile') == -1) {
-            this.ethereum.on('chainChanged', chainWeb3.handleNewChain)
-            this.ethereum.on('accountsChanged', chainWeb3.handleNewAccounts)
-        }
+        // if (navigator.userAgent.indexOf('Mobile') == -1) {
+        //     this.ethereum.on('chainChanged', chainWeb3.handleNewChain)
+        //     this.ethereum.on('accountsChanged', chainWeb3.handleNewAccounts)
+        // }
 
         this.handleChainStatus(true)
         console.log('this.chainInstalled:', this.chainInstalled)
