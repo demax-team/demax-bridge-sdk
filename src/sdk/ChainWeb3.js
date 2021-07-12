@@ -184,7 +184,7 @@ class ChainWeb3 {
         this.web3 = new Web3(this.ethereum)
 
         this.ethereum.autoRefreshOnNetworkChange = false
-        if (navigator.userAgent.indexOf('BitKeep') == -1) {
+        if (navigator.userAgent.indexOf('Mobile') == -1) {
             this.ethereum.on('chainChanged', chainWeb3.handleNewChain)
             this.ethereum.on('accountsChanged', chainWeb3.handleNewAccounts)
         }
