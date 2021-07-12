@@ -2,13 +2,8 @@
 
 ## Project setup
 ```
-yarn install
+yarn add  @walletconnect/client @walletconnect/qrcode-modal bignumber tslib web3
 
-npm link 
-
-npm link @demax/switch-bridge-sdk
-
-npm nulink @demax/switch-bridge-sdk
 ```
 
 ### Compiles and hot-reloads for development

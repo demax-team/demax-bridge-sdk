@@ -7,10 +7,6 @@ import web3Util from '../Web3Util.js'
 import { SwitchChainIds } from '../config/SwitchConfig.js';
 import { newSwitchTreasury } from './SwitchTreasury.js';
 
-function asleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 function getChainIds(chainId) {
     if([42,97,256].includes(chainId)) {
         return SwitchChainIds.test;
@@ -19,15 +15,6 @@ function getChainIds(chainId) {
 }
 
 var _switchAcrossTokens = {};
-
-var _process = {
-    step1_pending: 10,
-    step1_success: 11,
-    step1_fail: 12,
-    step2_pending: 20,
-    step2_success: 21,
-    step2_fail: 22,
-}
 
 function isTicket(_token, chainId) {
     for (let k in _switchAcrossTokens) {
@@ -49,14 +36,6 @@ function updateChainBlock(chainId) {
     })
 }
 
-function getChainBlock(chainId) {
-    if(_switchCount > 0) {
-        let res = localStorage.getItem('_switchBlockNumber'+chainId);
-        return Number(res);
-    }
-    return 0;
-}
-
 class SwitchAcross extends BaseByName {
     constructor(provider) {
         super(provider, SwitchAcrossABI, 'SwitchAcross');
@@ -66,7 +45,6 @@ class SwitchAcross extends BaseByName {
         this.subscribes = [];
         this.subscriptions = [];
         this.currentBlock = 0;
-        this.process = _process;
     }
 
     initialize(chainId, account=null) {
@@ -101,53 +79,6 @@ class SwitchAcross extends BaseByName {
             }
         });
         this.subscriptions.push(subscription);
-    }
-
-    async scanEventLog() {
-        if(this.currentBlock == 0) {
-            this.currentBlock = getChainBlock(this.provider.chainId);
-            if(this.currentBlock == 0) this.currentBlock = await this.provider.getBlockNumber();
-        }
-        if(_switchCount <=0) {
-            // console.log('SwitchAcross scanEventLog sikp');
-            await asleep(3000);
-            this.scanEventLog();
-            return;
-        }
-        let latestBlockNumber = this.currentBlock;
-        try {
-            latestBlockNumber = await this.provider.getBlockNumber();
-        } catch(e) {
-            console.error('SwitchAcross scan except:', e);
-            await asleep(3000);
-            this.scanEventLog();
-            return;
-        }
-        let toBlock = Math.min(this.currentBlock+1000, latestBlockNumber);
-        // console.log('SwitchAcross scanEventLog...', this.provider.chainId, this.currentBlock, toBlock);
-        if(toBlock > this.currentBlock) {
-            let records = null;
-            try {
-                console.log('SwitchAcross getPastEvents...', this.provider.chainId, this.currentBlock, toBlock);
-                records = await this.contract.getPastEvents("TransferOuted", {fromBlock: this.currentBlock, toBlock: toBlock});
-                // console.log('SwitchAcross getPastEvents records:', this.provider.chainId, records);
-                Object.keys(records).forEach(async (i)=>{
-                    let eventLog = {...records[i]};
-                    eventLog.chainId = this.provider.chainId;
-                    eventLog.eventName = "TransferOuted";
-                    console.log('getPastEvents eventLog:', this.subscribes.length, eventLog);
-                    this.subscribes.forEach((cb)=>{
-                        cb(eventLog);
-                    });
-                    this.currentBlock = Number(eventLog.blockNumber);
-                })
-                this.currentBlock = toBlock;
-            } catch(e) {
-                console.error('SwitchAcross scan getTransferOutedEvents:', this.provider.chainId, typeof(records), Array.isArray(records), records, e);
-            }
-        }
-        await asleep(3000);
-        this.scanEventLog();
     }
 
     findEventOneLog(logs) {
@@ -349,15 +280,13 @@ class SwitchAcross extends BaseByName {
         return await this.provider.executeContract(this.contract, 'transferOut', 0, [from, tokens, values, signature], this.handleTransferOut);
     }
 
-    async myTransferOut(data) {
-        if(data.process !=_process.step1_success) throw('myTransferOut: process must be step1_success');
-        if(Number(data.chainIdOut) != this.provider.chainId) throw('myTransferOut: invalid chainId');
-        let res = await this.handleTxWrap(data.chainIdIn, data.txIn);
+    async transferOutByChainIdInAndTxIn(chainIdIn, txIn) {
+        let res = await this.handleTxWrap(chainIdIn, txIn);
         console.log('myTransferOut handleTxWrap: ', res);
         if(!res) throw('myTransferOut: network error');
         if(res && res.data && res.data.status ==1) throw('myTransferOut: already hanlded');
         if(res && res.data && res.data.status ==0 && !res.data.signature) throw('myTransferOut: invalid signature');
-        data = res.data;
+        let data = res.data;
         return await this.transferOut(data.user, data.tokenIn, data.tokenOut, data.amountIn, data.amountOut, data.chainIdIn, data.mode, data.slide, data.inSn, data.signature);
     }
 
@@ -412,7 +341,6 @@ function newSwitchAcross(chainId) {
         let provider = Web3Provider(chainId);
         _SwitchAcrossInstanes[chainId] = new SwitchAcross(provider);
         _SwitchAcrossInstanes[chainId].initialize(chainId);
-        _SwitchAcrossInstanes[chainId].scanEventLog();
     }
     return _SwitchAcrossInstanes[chainId];
 }

@@ -10,24 +10,19 @@
   ],
   "repository": "https://github.com/demax-team/demax-bridge-sdk.git",
   "keywords": [
-    "switch"
+    "switch",
+    "switch-sdk"
   ],
   "author": "april <hesiyuetian@gmail.com>",
-  "module": "dist/sdk.esm.js",
-  "scripts": {
-    "lint": "tsdx lint src test",
-    "build": "tsdx build",
-    "start": "tsdx watch",
-    "test": "tsdx test",
-    "prepublishOnly": "tsdx build"
+  "engines": {
+    "node": ">=10"
   },
-  "dependencies": {
-    "big.js": "^5.2.2",
-    "decimal.js-light": "^2.5.0",
-    "jsbi": "^3.1.1",
-    "tiny-invariant": "^1.1.0",
-    "tiny-warning": "^1.0.3",
-    "toformat": "^2.0.0"
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build"
   },
   "peerDependencies": {
     "@walletconnect/client": "^1.4.1",
@@ -39,18 +34,22 @@
     "tslib": "^2.3.0",
     "web3": "^1.4.0"
   },
-  "devDependencies": {
-    "@types/big.js": "^4.0.5",
-    "@types/jest": "^24.0.25",
-    "babel-plugin-transform-jsbi-to-bigint": "^1.3.1",
-    "tsdx": "^0.12.3"
-  },
-  "engines": {
-    "node": ">=10"
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
   },
   "prettier": {
-    "printWidth": 120,
-    "semi": false,
-    "singleQuote": true
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "module": "dist/sdk.esm.js",
+  "devDependencies": {
+    "husky": "^7.0.1",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5"
   }
 }

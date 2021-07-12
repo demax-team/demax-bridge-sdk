@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/pancake-swap-sdk-master.iml" filepath="$PROJECT_DIR$/.idea/pancake-swap-sdk-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/sdk.iml" filepath="$PROJECT_DIR$/.idea/sdk.iml" />
     </modules>
   </component>
 </project>
