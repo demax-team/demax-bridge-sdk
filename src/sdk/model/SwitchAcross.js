@@ -8,7 +8,7 @@ import { SwitchChainIds } from '../config/SwitchConfig.js';
 import { newSwitchTreasury } from './SwitchTreasury.js';
 
 function getChainIds(chainId) {
-    if([42,97,256].includes(chainId)) {
+    if(SwitchChainIds.test.includes(chainId)) {
         return SwitchChainIds.test;
     }
     return SwitchChainIds.main;
@@ -227,14 +227,14 @@ class SwitchAcross extends BaseByName {
             mode = 2
         }
         let tokenOutInfo = await this.getTokenOutInfo(tokenIn, toChainId);
-        if(this.provider.isZeroAddress(tokenOutInfo.tokenOut)) {
-            d.amountOut = '0';
-        }
         let amountOutStr = new BigNumber(amountOut).shiftedBy(1 * tokenOutInfo.decimals).toFixed();
         console.log('inInfo:', tokenOutInfo, amountOutStr)
         let tokenInInfo = await this.getTokenInfo(tokenIn)
         let res = await this.contract.methods.getInInfo(tokenIn, toChainId, amountOutStr, mode).call();
         let d = {...res};
+        if(this.provider.isZeroAddress(tokenOutInfo.tokenOut)) {
+            d.amountOut = '0';
+        }
         d.amountOut = amountOut;
         d.amountIn = new BigNumber(res.amountIn).shiftedBy(-1 * tokenInInfo.decimals).toFixed();
         d.slide = new BigNumber(res.slide).shiftedBy(-1 * tokenOutInfo.decimals).toFixed();
@@ -302,7 +302,7 @@ class SwitchAcross extends BaseByName {
 
     async handleTxWrap(chainId, tx) {
         let url = '/api/handleTx';
-        if([42,97,256].includes(chainId)) {
+        if(SwitchChainIds.test.includes(chainId)) {
             url = '/api-test/handleTx';
         }
         return await this.handleTx(chainId, tx, url);
@@ -310,7 +310,7 @@ class SwitchAcross extends BaseByName {
 
     async handleTx(chainId, tx, url) {
         if(!url) {
-            if([42,97,256].includes(chainId)) {
+            if(SwitchChainIds.test.includes(chainId)) {
                 url = 'https://switchfinance.xyz/api-test/handleTx';
             } else {
                 url = 'https://switchfinance.xyz/api/handleTx';
